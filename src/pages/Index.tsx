@@ -132,12 +132,11 @@ const Index = () => {
           <CitySearch onSearch={fetchWeather} loading={loading} />
         </section>
 
-        {weatherData && (
+        {(loading || weatherData) && (
           <section className="space-y-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-center">
-              Clima en {cityName}
+              {cityName ? `Clima en ${cityName}` : 'Buscando...'}
             </h2>
-            
             <WeatherCard data={weatherData} loading={loading} />
           </section>
         )}
