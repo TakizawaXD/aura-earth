@@ -2,7 +2,9 @@ import { useState } from "react";
 import Earth3D from "@/components/Earth3D";
 import CitySearch from "@/components/CitySearch";
 import WeatherCard from "@/components/WeatherCard";
-import { useToast } from "@/hooks/use-toast";
+import AuthDialog from "@/components/AuthDialog";
+import ThemeToggle from "@/components/ThemeToggle";
+import { toast } from "sonner";
 
 interface WeatherData {
   temperature: number;
@@ -11,13 +13,13 @@ interface WeatherData {
   uvIndex: number;
   airQuality: number;
   description: string;
+  pressure: number;
 }
 
 const Index = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [cityName, setCityName] = useState("");
-  const { toast } = useToast();
 
   const fetchWeather = async (city: string) => {
     setLoading(true);
@@ -53,24 +55,18 @@ const Index = () => {
       setWeatherData({
         temperature: Math.round(weatherData.main.temp),
         humidity: weatherData.main.humidity,
-        windSpeed: Math.round(weatherData.wind.speed * 3.6), // Convert m/s to km/h
+        windSpeed: Math.round(weatherData.wind.speed),
         uvIndex: uvData.current?.uvi ? Math.round(uvData.current.uvi) : 0,
-        airQuality: airQualityData.list[0].main.aqi * 50, // Convert to 0-500 scale
+        airQuality: airQualityData.list[0].main.aqi * 50,
         description: weatherData.weather[0].description,
+        pressure: weatherData.main.pressure,
       });
       
       setCityName(weatherData.name);
       
-      toast({
-        title: "¡Datos del clima cargados!",
-        description: `Mostrando información de ${weatherData.name}`,
-      });
+      toast.success(`¡Datos cargados! Mostrando clima de ${weatherData.name}`);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "No se pudo obtener la información del clima. Intenta con otra ciudad.",
-        variant: "destructive",
-      });
+      toast.error("No se pudo obtener la información del clima. Intenta con otra ciudad.");
       setWeatherData(null);
     } finally {
       setLoading(false);
@@ -78,46 +74,52 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
-      {/* Header */}
-      <header className="pt-8 pb-4 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent mb-3">
-            Aura Global
+    <div className="min-h-screen bg-gradient-to-b from-background via-card to-background">
+      {/* Header with Auth */}
+      <header className="container mx-auto px-4 py-4 md:py-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-center sm:text-left bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
+            🌍 Aura Global
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground">
-            Tu amigo del clima en tiempo real 🌍
-          </p>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <AuthDialog />
+          </div>
         </div>
+        <p className="text-center sm:text-left text-muted-foreground text-base md:text-lg">
+          Tu amigo climático personal
+        </p>
       </header>
 
-      {/* 3D Earth Animation */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <Earth3D />
-      </div>
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-4 md:py-8 space-y-8 md:space-y-12">
+        {/* 3D Earth Animation */}
+        <section className="flex justify-center">
+          <div className="w-full max-w-4xl">
+            <Earth3D />
+          </div>
+        </section>
 
-      {/* Search Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <CitySearch onSearch={fetchWeather} loading={loading} />
-      </div>
+        {/* Search Section */}
+        <section className="space-y-4">
+          <CitySearch onSearch={fetchWeather} loading={loading} />
+        </section>
 
-      {/* City Name Display */}
-      {cityName && (
-        <div className="max-w-7xl mx-auto px-4 text-center mb-6">
-          <h2 className="text-3xl font-bold text-foreground">{cityName}</h2>
-        </div>
-      )}
-
-      {/* Weather Cards */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <WeatherCard data={weatherData} loading={loading} />
-      </div>
+        {/* Weather Display */}
+        {weatherData && (
+          <section className="space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center">
+              Clima en {cityName}
+            </h2>
+            
+            <WeatherCard data={weatherData} loading={loading} />
+          </section>
+        )}
+      </main>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-muted-foreground">
-        <p className="text-sm">
-          Datos proporcionados por OpenWeatherMap • Actualizado en tiempo real
-        </p>
+      <footer className="container mx-auto px-4 py-6 md:py-8 mt-12 md:mt-16 text-center text-muted-foreground text-sm md:text-base">
+        <p>🌎 Aura Global - Clima en tiempo real para todo el mundo</p>
       </footer>
     </div>
   );
