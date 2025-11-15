@@ -59,17 +59,11 @@ const Index = () => {
       
       const airQualityData = await airQualityResponse.json();
       
-      const uvResponse = await fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&exclude=minutely,hourly,daily,alerts&appid=${API_KEY}`
-      );
-      
-      const uvData = await uvResponse.json();
-      
       setWeatherData({
         temperature: Math.round(weatherData.main.temp),
         humidity: weatherData.main.humidity,
         windSpeed: Math.round(weatherData.wind.speed),
-        uvIndex: uvData.current?.uvi ? Math.round(uvData.current.uvi) : 0,
+        uvIndex: 0,
         airQuality: airQualityData.list[0].main.aqi * 50,
         description: weatherData.weather[0].description,
         pressure: weatherData.main.pressure,
@@ -129,7 +123,7 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-4 md:py-8 space-y-8 md:space-y-12">
         <section className="flex justify-center">
-          <div className="w-full max-w-4xl h-[500px] rounded-lg overflow-hidden shadow-large">
+          <div className="w-full max-w-4xl h-[400px] md:h-[500px] rounded-lg overflow-hidden shadow-large">
             <Mapbox coordinates={coordinates} />
           </div>
         </section>

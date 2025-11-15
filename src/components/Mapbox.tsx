@@ -81,7 +81,7 @@ const Mapbox: React.FC<MapboxProps> = ({ coordinates }) => {
       onMoveStart={handleMoveStart}
       onMoveEnd={handleMoveEnd}
       style={{ width: '100%', height: '100%' }}
-      mapStyle="mapbox://styles/mapbox/dark-v10"
+      mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
       projection={{name: 'globe'}}
       mapboxAccessToken={MAPBOX_TOKEN}
       onLoad={onLoad}

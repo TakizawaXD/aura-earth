@@ -26,8 +26,8 @@ interface WeatherCardProps {
 export default function WeatherCard({ data, loading }: WeatherCardProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {[...Array(9)].map((_, i) => (
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        {[...Array(10)].map((_, i) => (
           <Card key={i} className="p-4 sm:p-6 animate-pulse">
             <div className="h-20 sm:h-24 bg-muted rounded-lg" />
           </Card>
@@ -58,7 +58,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
       {/* Temperature Card */}
       <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
         <div className="flex items-center gap-3 sm:gap-4">
