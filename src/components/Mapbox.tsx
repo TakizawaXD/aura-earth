@@ -55,12 +55,9 @@ const Mapbox: React.FC<MapboxProps> = ({ coordinates }) => {
 
   useEffect(() => {
     if (coordinates) {
-      mapRef.current?.flyTo({
+      mapRef.current?.jumpTo({
         center: [coordinates.lon, coordinates.lat],
         zoom: 12,
-        speed: 0.8,
-        curve: 1,
-        easing: (t) => t,
       });
     }
   }, [coordinates]);

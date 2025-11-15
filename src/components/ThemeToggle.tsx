@@ -26,7 +26,7 @@ export default function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={toggleTheme}
-      className="rounded-full shadow-soft"
+      className="rounded-full"
       aria-label="Toggle theme"
     >
       {theme === "light" ? (

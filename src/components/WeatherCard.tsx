@@ -28,7 +28,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
     return (
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
         {[...Array(10)].map((_, i) => (
-          <Card key={i} className="p-4 sm:p-6 animate-pulse">
+          <Card key={i} className="p-4 sm:p-6">
             <div className="h-20 sm:h-24 bg-muted rounded-lg" />
           </Card>
         ))}
@@ -60,7 +60,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
       {/* Temperature Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-accent/10 shrink-0">
             <Sun className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
@@ -74,7 +74,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Feels Like Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-accent/10 shrink-0">
             <Thermometer className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
@@ -87,7 +87,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Min/Max Temperature Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-primary/10 shrink-0">
             <Thermometer className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
@@ -100,7 +100,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Humidity Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-primary/10 shrink-0">
             <Droplets className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
@@ -110,7 +110,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
             <p className="text-2xl sm:text-3xl font-bold text-foreground">{data.humidity}%</p>
             <div className="mt-2 w-full bg-muted rounded-full h-2">
               <div 
-                className="bg-primary h-2 rounded-full transition-all"
+                className="bg-primary h-2 rounded-full"
                 style={{ width: `${data.humidity}%` }}
               />
             </div>
@@ -119,7 +119,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Wind Speed Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-primary-glow/10 shrink-0">
             <Wind className="w-6 h-6 sm:w-8 sm:h-8 text-primary-glow" />
@@ -133,7 +133,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* UV Index Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-accent/10 shrink-0">
             <Sun className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
@@ -143,7 +143,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
             <p className="text-2xl sm:text-3xl font-bold text-foreground">{data.uvIndex}</p>
             <div className="mt-2 w-full bg-muted rounded-full h-2">
               <div 
-                className="bg-accent h-2 rounded-full transition-all"
+                className="bg-accent h-2 rounded-full"
                 style={{ width: `${(data.uvIndex / 11) * 100}%` }}
               />
             </div>
@@ -152,7 +152,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Air Quality Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-success/10 shrink-0">
             <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-success" />
@@ -168,7 +168,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Pressure Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-primary/10 shrink-0">
             <Gauge className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
@@ -181,7 +181,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
       
       {/* Sunrise/Sunset Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-primary-glow/10 shrink-0">
              <div className="flex flex-row gap-4">
@@ -197,7 +197,7 @@ export default function WeatherCard({ data, loading }: WeatherCardProps) {
       </Card>
 
       {/* Visibility Card */}
-      <Card className="p-4 sm:p-6 shadow-soft hover:shadow-medium transition-shadow">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="p-2 sm:p-3 rounded-full bg-primary/10 shrink-0">
             <Eye className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
