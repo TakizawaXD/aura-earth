@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import Mapbox from "@/components/Mapbox";
 import CitySearch from "@/components/CitySearch";
 import WeatherCard from "@/components/WeatherCard";
 import AuthDialog from "@/components/AuthDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 
 interface WeatherData {
   temperature: number;
@@ -29,10 +33,12 @@ interface Coordinates {
 }
 
 const Index = () => {
+  const { user } = useAuth();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [cityName, setCityName] = useState("");
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const fetchWeather = async (city: string, isBackgroundUpdate = false) => {
     if (!isBackgroundUpdate) {
@@ -78,6 +84,28 @@ const Index = () => {
       
       setCityName(weatherData.name);
       
+      // Save to history if user is logged in
+      if (user && !isBackgroundUpdate) {
+        await supabase.from("search_history").insert({
+          user_id: user.id,
+          city_name: weatherData.name,
+          country: weatherData.sys.country,
+          temperature: weatherData.main.temp,
+          weather_condition: weatherData.weather[0].description,
+        });
+      }
+      
+      // Check if city is favorite
+      if (user) {
+        const { data } = await supabase
+          .from("favorite_cities")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("city_name", weatherData.name)
+          .maybeSingle();
+        setIsFavorite(!!data);
+      }
+      
       if (!isBackgroundUpdate) {
         toast.success(`¡Datos cargados! Mostrando clima de ${weatherData.name}`);
       }
@@ -89,6 +117,48 @@ const Index = () => {
     } finally {
       if (!isBackgroundUpdate) {
         setLoading(false);
+      }
+    }
+  };
+
+  const toggleFavorite = async () => {
+    if (!user) {
+      toast.error("Debes iniciar sesión para guardar favoritos");
+      return;
+    }
+
+    if (!cityName || !coordinates) {
+      toast.error("Primero busca una ciudad");
+      return;
+    }
+
+    if (isFavorite) {
+      const { error } = await supabase
+        .from("favorite_cities")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("city_name", cityName);
+
+      if (error) {
+        toast.error("Error al eliminar favorito");
+      } else {
+        setIsFavorite(false);
+        toast.success("Eliminado de favoritos");
+      }
+    } else {
+      const { error } = await supabase.from("favorite_cities").insert({
+        user_id: user.id,
+        city_name: cityName,
+        country: "Unknown",
+        latitude: coordinates.lat,
+        longitude: coordinates.lon,
+      });
+
+      if (error) {
+        toast.error("Error al agregar favorito");
+      } else {
+        setIsFavorite(true);
+        toast.success("Agregado a favoritos");
       }
     }
   };
@@ -130,6 +200,18 @@ const Index = () => {
 
         <section className="space-y-4">
           <CitySearch onSearch={fetchWeather} loading={loading} />
+          {user && weatherData && cityName && (
+            <div className="flex justify-center">
+              <Button
+                variant={isFavorite ? "default" : "outline"}
+                onClick={toggleFavorite}
+                className="gap-2"
+              >
+                <Star className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+                {isFavorite ? "Eliminar de favoritos" : "Agregar a favoritos"}
+              </Button>
+            </div>
+          )}
         </section>
 
         {(loading || weatherData) && (

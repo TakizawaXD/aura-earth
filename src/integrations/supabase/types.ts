@@ -14,7 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      favorite_cities: {
+        Row: {
+          city_name: string
+          country: string | null
+          created_at: string
+          id: string
+          latitude: number
+          longitude: number
+          user_id: string
+        }
+        Insert: {
+          city_name: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          user_id: string
+        }
+        Update: {
+          city_name?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      search_history: {
+        Row: {
+          city_name: string
+          country: string | null
+          id: string
+          searched_at: string
+          temperature: number | null
+          user_id: string
+          weather_condition: string | null
+        }
+        Insert: {
+          city_name: string
+          country?: string | null
+          id?: string
+          searched_at?: string
+          temperature?: number | null
+          user_id: string
+          weather_condition?: string | null
+        }
+        Update: {
+          city_name?: string
+          country?: string | null
+          id?: string
+          searched_at?: string
+          temperature?: number | null
+          user_id?: string
+          weather_condition?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
