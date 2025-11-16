@@ -27,7 +27,13 @@ const Mapbox: React.FC<MapboxProps> = ({ coordinates }) => {
 
   const spinGlobe = useCallback(() => {
     const map = mapRef.current?.getMap();
-    if (!map || isUserInteracting.current || map.getZoom() > ZOOM_THRESHOLD) return;
+    if (!map || isUserInteracting.current || map.getZoom() > ZOOM_THRESHOLD) {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = null;
+      }
+      return;
+    }
 
     const center = map.getCenter();
     center.lng -= SPIN_RATE / 100;
@@ -55,10 +61,19 @@ const Mapbox: React.FC<MapboxProps> = ({ coordinates }) => {
 
   useEffect(() => {
     if (coordinates) {
-      mapRef.current?.jumpTo({
+      isUserInteracting.current = true;
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = null;
+      }
+      mapRef.current?.flyTo({
         center: [coordinates.lon, coordinates.lat],
         zoom: 12,
+        duration: 2000,
       });
+      setTimeout(() => {
+        isUserInteracting.current = false;
+      }, 2500);
     }
   }, [coordinates]);
 
