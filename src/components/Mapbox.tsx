@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { Map, MapRef, Source, Layer } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -16,30 +16,31 @@ interface MapboxProps {
 }
 
 const Mapbox: React.FC<MapboxProps> = ({ coordinates }) => {
-  const [viewState, setViewState] = useState({
+  const INITIAL_VIEW_STATE = {
     longitude: -100,
     latitude: 40,
     zoom: 1,
-  });
+  };
   const mapRef = useRef<MapRef>(null);
   const isUserInteracting = useRef(false);
-  const animationFrameId = useRef<number | null>(null);
+  const spinScheduled = useRef(false);
 
   const spinGlobe = useCallback(() => {
     const map = mapRef.current?.getMap();
-    if (!map || isUserInteracting.current || map.getZoom() > ZOOM_THRESHOLD) {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-        animationFrameId.current = null;
-      }
+    if (!map) return;
+    if (isUserInteracting.current || map.getZoom() > ZOOM_THRESHOLD || map.isMoving()) {
       return;
     }
 
     const center = map.getCenter();
-    center.lng -= SPIN_RATE / 100;
-    map.easeTo({ center, duration: 100, easing: (n) => n });
+    center.lng -= SPIN_RATE / 50; // slower, smoother
 
-    animationFrameId.current = requestAnimationFrame(spinGlobe);
+    // Chain the spin on move end to avoid nested eases
+    map.once('moveend', () => {
+      spinGlobe();
+    });
+
+    map.easeTo({ center, duration: 1000, easing: (n) => n });
   }, []);
 
   const handleMoveStart = useCallback(() => {
@@ -62,34 +63,27 @@ const Mapbox: React.FC<MapboxProps> = ({ coordinates }) => {
   useEffect(() => {
     if (coordinates) {
       isUserInteracting.current = true;
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-        animationFrameId.current = null;
-      }
       mapRef.current?.flyTo({
         center: [coordinates.lon, coordinates.lat],
         zoom: 12,
         duration: 2000,
       });
+      // Re-enable spin slightly after the flight completes
       setTimeout(() => {
         isUserInteracting.current = false;
+        spinGlobe();
       }, 2500);
     }
-  }, [coordinates]);
+  }, [coordinates, spinGlobe]);
 
   useEffect(() => {
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-    };
+    return () => {};
   }, []);
 
   return (
     <Map
       ref={mapRef}
-      {...viewState}
-      onMove={evt => setViewState(evt.viewState)}
+      initialViewState={INITIAL_VIEW_STATE}
       onMoveStart={handleMoveStart}
       onMoveEnd={handleMoveEnd}
       style={{ width: '100%', height: '100%' }}
