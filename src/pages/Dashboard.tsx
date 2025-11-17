@@ -203,72 +203,79 @@ const Dashboard = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-card to-background flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-card to-primary/5">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="text-muted-foreground font-medium">Cargando dashboard...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-card to-background">
-      <header className="container mx-auto px-4 py-6 border-b border-border">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border-2 border-primary">
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                {profile?.full_name?.charAt(0) || user?.email?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-2xl font-bold">Dashboard</h1>
-              <p className="text-sm text-muted-foreground">{user?.email}</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-card/30 to-primary/5">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-[0_2px_8px_hsl(var(--primary)/0.08)]">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary via-accent to-success flex items-center justify-center shadow-md text-xl">
+                🌍
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-success bg-clip-text text-transparent">
+                  Aura Global
+                </h1>
+                <p className="text-sm text-muted-foreground">Dashboard de {profile?.full_name || user?.email}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <Button variant="outline" onClick={() => navigate("/")}>
-              <MapPin className="mr-2 h-4 w-4" />
-              Mapa
-            </Button>
-            <Button variant="destructive" onClick={handleSignOut}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Salir
-            </Button>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <Button variant="outline" onClick={() => navigate("/")} className="shadow-sm hover:shadow-md transition-all hidden sm:flex">
+                <MapPin className="mr-2 h-4 w-4" />
+                Mapa
+              </Button>
+              <Button variant="outline" onClick={handleSignOut} size="icon" className="shadow-sm hover:shadow-md transition-all">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="favorites" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5">
-            <TabsTrigger value="favorites">
-              <Star className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Favoritos</span>
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-5 bg-muted/50 p-1 h-auto">
+            <TabsTrigger value="favorites" className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all flex flex-col sm:flex-row items-center gap-1 py-3">
+              <Star className="h-4 w-4" />
+              <span className="text-xs sm:text-sm">Favoritos</span>
             </TabsTrigger>
-            <TabsTrigger value="weather">
-              <CloudRain className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Clima Técnico</span>
+            <TabsTrigger value="weather" className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all flex flex-col sm:flex-row items-center gap-1 py-3">
+              <CloudRain className="h-4 w-4" />
+              <span className="text-xs sm:text-sm">Clima</span>
             </TabsTrigger>
-            <TabsTrigger value="forecast">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Pronóstico</span>
+            <TabsTrigger value="forecast" className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all flex flex-col sm:flex-row items-center gap-1 py-3">
+              <TrendingUp className="h-4 w-4" />
+              <span className="text-xs sm:text-sm">Pronóstico</span>
             </TabsTrigger>
-            <TabsTrigger value="history">
-              <History className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Historial</span>
+            <TabsTrigger value="history" className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all flex flex-col sm:flex-row items-center gap-1 py-3">
+              <History className="h-4 w-4" />
+              <span className="text-xs sm:text-sm">Historial</span>
             </TabsTrigger>
-            <TabsTrigger value="profile">
-              <User className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Perfil</span>
+            <TabsTrigger value="profile" className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all flex flex-col sm:flex-row items-center gap-1 py-3">
+              <User className="h-4 w-4" />
+              <span className="text-xs sm:text-sm">Perfil</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="favorites" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Ciudades Favoritas</CardTitle>
+          <TabsContent value="favorites" className="space-y-4 animate-in fade-in-50 duration-300">
+            <Card className="border-border/50 shadow-[0_2px_8px_hsl(var(--primary)/0.08)]">
+              <CardHeader className="bg-gradient-to-r from-card to-card/80">
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="h-5 w-5 text-accent" />
+                  Ciudades Favoritas
+                </CardTitle>
                 <CardDescription>
-                  Administra tus ubicaciones guardadas
+                  Administra tus ubicaciones guardadas y consulta el clima
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -279,13 +286,18 @@ const Dashboard = () => {
                 ) : (
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {favorites.map((fav) => (
-                      <Card key={fav.id} className="relative hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                          <CardTitle className="text-lg">{fav.city_name}</CardTitle>
-                          <CardDescription>{fav.country}</CardDescription>
+                      <Card key={fav.id} className="relative border-border/50 bg-gradient-to-br from-card to-card/80 hover:shadow-[0_4px_16px_hsl(var(--primary)/0.12)] transition-all duration-300 hover:scale-[1.02]">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            {fav.city_name}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-1">
+                            🌍 {fav.country}
+                          </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <div className="text-sm text-muted-foreground space-y-1">
+                          <div className="text-sm text-muted-foreground space-y-1 bg-muted/30 p-3 rounded-lg">
                             <p>📍 Lat: {Number(fav.latitude).toFixed(4)}°</p>
                             <p>📍 Lon: {Number(fav.longitude).toFixed(4)}°</p>
                           </div>
@@ -293,7 +305,7 @@ const Dashboard = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="flex-1"
+                              className="flex-1 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all"
                               onClick={() => loadWeatherForCity(fav.city_name, Number(fav.latitude), Number(fav.longitude))}
                             >
                               <BarChart3 className="mr-2 h-4 w-4" />
@@ -303,6 +315,7 @@ const Dashboard = () => {
                               variant="destructive"
                               size="sm"
                               onClick={() => handleDeleteFavorite(fav.id)}
+                              className="shadow-sm hover:shadow-md transition-all"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -316,12 +329,15 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="weather" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Datos Meteorológicos Técnicos</CardTitle>
+          <TabsContent value="weather" className="space-y-4 animate-in fade-in-50 duration-300">
+            <Card className="border-border/50 shadow-[0_2px_8px_hsl(var(--primary)/0.08)]">
+              <CardHeader className="bg-gradient-to-r from-card to-card/80">
+                <CardTitle className="flex items-center gap-2">
+                  <CloudRain className="h-5 w-5 text-primary" />
+                  Datos Meteorológicos Técnicos
+                </CardTitle>
                 <CardDescription>
-                  Información detallada del clima actual
+                  Información detallada del clima actual con métricas profesionales
                 </CardDescription>
               </CardHeader>
               <CardContent>
