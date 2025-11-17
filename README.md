@@ -1933,9 +1933,10 @@ MIT License - Ver archivo LICENSE para más detalles.
 ## 📞 Soporte y Contacto
 
 Para consultas académicas o técnicas:
-- **Email**: soporte@auraglobal.com
+- **Email**: andresmontalvo2222@gmail.com
 - **Documentación**: Este README
 - **Issues**: GitHub Issues (si aplica)
+- **Numero**: +573152738241
 
 ---
 
@@ -1946,7 +1947,7 @@ Para consultas académicas o técnicas:
 - **Estado**: Producción
 - **Licencia**: MIT License
 - **Repositorio**: [URL del repositorio]
-
+- **Ejecucion**: https://auraglobaloficial.netlify.app/
 ---
 
 **Desarrollado con ❤️ como proyecto final de Planeación de Sistemas Informáticos**
