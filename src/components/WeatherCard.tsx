@@ -16,6 +16,7 @@ interface WeatherData {
   sunrise: number;
   sunset: number;
   visibility: number;
+  weather: string;
 }
 
 interface WeatherCardProps {

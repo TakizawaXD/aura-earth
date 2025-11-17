@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, Star, History, User, LogOut, Trash2, MapPin, TrendingUp, BarChart3, CloudRain } from "lucide-react";
+import { Loader2, Star, History, User, LogOut, Trash2, MapPin, TrendingUp, BarChart3, CloudRain, Sun, Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudSnow, Tornado, Wind } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ interface FavoriteCity {
   latitude: number;
   longitude: number;
   created_at: string;
+  weather?: string;
 }
 
 interface SearchHistory {
@@ -59,6 +60,36 @@ interface ForecastData {
   windSpeed: number;
 }
 
+const WeatherIcon = ({ weather, className }: { weather: string; className: string }) => {
+    switch (weather) {
+        case "Thunderstorm":
+            return <CloudLightning className={className} />;
+        case "Drizzle":
+            return <CloudDrizzle className={className} />;
+        case "Rain":
+            return <CloudRain className={className} />;
+        case "Snow":
+            return <CloudSnow className={className} />;
+        case "Mist":
+        case "Smoke":
+        case "Haze":
+        case "Dust":
+        case "Fog":
+        case "Sand":
+        case "Ash":
+        case "Squall":
+            return <CloudFog className={className} />;
+        case "Tornado":
+            return <Tornado className={className} />;
+        case "Clear":
+            return <Sun className={className} />;
+        case "Clouds":
+            return <Cloud className={className} />;
+        default:
+            return <Cloud className={className} />;
+    }
+};
+
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -85,6 +116,40 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+        if (user) {
+            updateFavoritesWeather();
+        }
+    }, 300000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [user, favorites]);
+
+  const updateFavoritesWeather = async () => {
+    if (favorites.length === 0) return;
+
+    try {
+        const updatedFavorites = await Promise.all(
+            favorites.map(async (fav) => {
+                const API_KEY = "bb408aeec5264c3e59e40a0ac545d87d";
+                const weatherRes = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${fav.city_name}&appid=${API_KEY}&units=metric&lang=es`
+                );
+                const weather = await weatherRes.json();
+                return {
+                    ...fav,
+                    weather: weather.weather[0].main,
+                };
+            })
+        );
+        setFavorites(updatedFavorites);
+        toast.info("Datos meteorológicos de favoritos actualizados.");
+    } catch (error) {
+        toast.error("Error al actualizar el clima de los favoritos.");
+    }
+  };
+
   const loadDashboardData = async () => {
     setLoading(true);
     try {
@@ -99,7 +164,22 @@ const Dashboard = () => {
         setFullName(profileRes.data.full_name || "");
         setUsername(profileRes.data.username || "");
       }
-      if (favoritesRes.data) setFavorites(favoritesRes.data);
+      if (favoritesRes.data) {
+        const favoritesWithWeather = await Promise.all(
+          favoritesRes.data.map(async (fav) => {
+            const API_KEY = "bb408aeec5264c3e59e40a0ac545d87d";
+            const weatherRes = await fetch(
+              `https://api.openweathermap.org/data/2.5/weather?q=${fav.city_name}&appid=${API_KEY}&units=metric&lang=es`
+            );
+            const weather = await weatherRes.json();
+            return {
+              ...fav,
+              weather: weather.weather[0].main,
+            };
+          })
+        );
+        setFavorites(favoritesWithWeather);
+      }
       if (historyRes.data) setHistory(historyRes.data);
     } catch (error: any) {
       toast.error("Error al cargar datos del dashboard");
@@ -230,10 +310,6 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <Button variant="outline" onClick={() => navigate("/")} className="shadow-sm hover:shadow-md transition-all hidden sm:flex">
-                <MapPin className="mr-2 h-4 w-4" />
-                Mapa
-              </Button>
               <Button variant="outline" onClick={handleSignOut} size="icon" className="shadow-sm hover:shadow-md transition-all">
                 <LogOut className="h-4 w-4" />
               </Button>
@@ -300,6 +376,12 @@ const Dashboard = () => {
                           <div className="text-sm text-muted-foreground space-y-1 bg-muted/30 p-3 rounded-lg">
                             <p>📍 Lat: {Number(fav.latitude).toFixed(4)}°</p>
                             <p>📍 Lon: {Number(fav.longitude).toFixed(4)}°</p>
+                            {fav.weather && (
+                               <div className="flex items-center gap-2 pt-2">
+                                   <WeatherIcon weather={fav.weather} className="h-5 w-5" />
+                                   <p className="font-semibold">{fav.weather}</p>
+                               </div>
+                            )}
                           </div>
                           <div className="flex gap-2 mt-4">
                             <Button
@@ -483,6 +565,14 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      <Button
+        onClick={() => navigate("/")}
+        className="fixed bottom-8 right-8 h-14 w-auto px-6 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 shadow-lg hover:shadow-primary/30 text-lg font-semibold text-primary hover:bg-primary/90 hover:text-primary-foreground flex items-center justify-center gap-2 transition-all duration-300 ease-in-out"
+      >
+        <MapPin className="h-5 w-5" />
+        Mapa
+      </Button>
     </div>
   );
 };
